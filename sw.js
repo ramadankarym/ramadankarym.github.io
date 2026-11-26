@@ -1,5 +1,5 @@
 // Ramadan page service worker: offline-first for the site's own static assets.
-const CACHE = 'ramadan-site-v5';
+const CACHE = 'ramadan-site-v6';
 const CORE = [
   './', './index.html', './styles.css', './app.js', './tool.js', './scenes.js',
   './preview-hero.css', './hero-scene.js', './daily-card.js', './ramadan-logo.svg', './manifest.webmanifest', './icon-192.png', './icon-512.png'
