@@ -1,6 +1,10 @@
 (() => {
   // غروب الشمس المتوقع في المنصورة، الدقهلية، يوم ٧ فبراير ٢٠٢٧: ٥:٣٤ م بتوقيت مصر (UTC+02).
-  const countdownTarget = new Date('2027-02-07T17:34:00+02:00');
+  let countdownTarget = new Date('2027-02-07T17:34:00+02:00');
+  const TARGETS = {
+    sunset: new Date('2027-02-07T17:34:00+02:00'),
+    fajr: new Date('2027-02-08T04:58:00+02:00'),
+  };
   // اليوم المدني الأول من رمضان المتوقع هو الاثنين ٨ فبراير ٢٠٢٧.
   const ramadanDay = new Date('2027-02-08T12:00:00+02:00');
   const byId = (id) => document.getElementById(id);
@@ -10,6 +14,7 @@
     minutes: byId('minutes'),
     seconds: byId('seconds'),
     status: byId('timer-status'),
+    nights: byId('nights-line'),
     hijri: byId('ramadan-date'),
     gregorian: byId('gregorian-date'),
     today: byId('today-date'),
@@ -112,6 +117,9 @@
     nodes.status.textContent = remaining === 0
       ? T.ramadanArrived
       : T.closer;
+    if (nodes.nights) {
+      nodes.nights.textContent = remaining === 0 ? '' : numberFormat.format(days + 1) + (LANG === 'en' ? ' nights to Ramadan' : ' ليلة على رمضان');
+    }
   }
 
   async function shareCountdown() {
@@ -216,5 +224,51 @@
 
   setMotionEnabled(motionEnabled);
   updateCountdown();
+  // countdown target toggle (sunset of first night vs first Fajr)
+  const targetSunsetBtn = byId('target-sunset');
+  const targetFajrBtn = byId('target-fajr');
+  function setTarget(which) {
+    countdownTarget = TARGETS[which];
+    if (targetSunsetBtn) targetSunsetBtn.setAttribute('aria-pressed', String(which === 'sunset'));
+    if (targetFajrBtn) targetFajrBtn.setAttribute('aria-pressed', String(which === 'fajr'));
+    updateCountdown();
+  }
+  if (targetSunsetBtn) targetSunsetBtn.addEventListener('click', () => setTarget('sunset'));
+  if (targetFajrBtn) targetFajrBtn.addEventListener('click', () => setTarget('fajr'));
+
+  // add-to-calendar: downloads a small .ics for the first night of Ramadan
+  const calBtn = byId('calendar-button');
+  if (calBtn) calBtn.addEventListener('click', () => {
+    const ics = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//ramadankarym//countdown//AR',
+      'BEGIN:VEVENT',
+      'UID:ramadan-1448-night@ramadankarym.github.io',
+      'DTSTAMP:20261126T120000Z',
+      'DTSTART:20270207T153400Z',
+      'DTEND:20270207T180000Z',
+      'SUMMARY:' + (LANG === 'en' ? 'First night of Ramadan 1448' : 'أول ليلة من رمضان ١٤٤٨ هـ'),
+      'DESCRIPTION:' + (LANG === 'en' ? 'Expected sunset marking the first night of Ramadan 1448. https://ramadankarym.github.io/' : 'غروب أول ليلة من رمضان ١٤٤٨ هـ (متوقع). https://ramadankarym.github.io/'),
+      'END:VEVENT', 'END:VCALENDAR',
+    ].join('\r\n');
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ramadan-1448.ics';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // fullscreen toggle for the countdown page
+  const fsBtn = byId('fullscreen-button');
+  if (fsBtn) fsBtn.addEventListener('click', () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    } else {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+  });
+
   window.setInterval(updateCountdown, 1000);
 })();
