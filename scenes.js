@@ -1104,6 +1104,32 @@ export function drawScene(ctx, template, W, H, t, text) {
             ctx.fillStyle = `rgba(255, 196, 100, ${0.5 * tw2})`;
             ctx.fillRect(lx, ly, 3 * mu, 3 * mu);
         }
+        // minarets, a dome and palms rising over the skyline
+        drawMinaretSil(ctx, W * 0.14, cy + 4 * mu, 200 * mu, 26 * mu, '#14101f');
+        drawMinaretSil(ctx, W * 0.88, cy + 4 * mu, 240 * mu, 30 * mu, '#14101f');
+        ctx.fillStyle = '#14101f';
+        ctx.beginPath();
+        ctx.arc(W * 0.66, cy + 2 * mu, 48 * mu, Math.PI, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(W * 0.66 - 3 * mu, cy - 66 * mu, 6 * mu, 22 * mu);
+        ctx.fillStyle = 'rgba(255, 214, 130, 0.9)';
+        ctx.beginPath(); ctx.arc(W * 0.66, cy - 68 * mu, 5 * mu, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#14101f';
+        for (const px of [W * 0.36, W * 0.48]) {
+            ctx.lineWidth = 7 * mu;
+            ctx.beginPath();
+            ctx.moveTo(px, cy + 4 * mu);
+            ctx.quadraticCurveTo(px + 10 * mu, cy - 70 * mu, px + 5 * mu, cy - 108 * mu);
+            ctx.stroke();
+            ctx.lineWidth = 4.5 * mu;
+            for (let f = 0; f < 6; f++) {
+                const fa = -Math.PI * (0.12 + f * 0.15);
+                ctx.beginPath();
+                ctx.moveTo(px + 5 * mu, cy - 108 * mu);
+                ctx.quadraticCurveTo(px + 5 * mu + Math.cos(fa) * 46 * mu, cy - 108 * mu + Math.sin(fa) * 34 * mu, px + 5 * mu + Math.cos(fa) * 62 * mu, cy - 108 * mu + Math.sin(fa) * 50 * mu + 16 * mu);
+                ctx.stroke();
+            }
+        }
         // citadel hill + cannon
         const gy = H * 0.94;
         ctx.fillStyle = '#0a0714';
@@ -1114,10 +1140,10 @@ export function drawScene(ctx, template, W, H, t, text) {
         ctx.lineTo(0, H);
         ctx.closePath();
         ctx.fill();
-        drawCannon(ctx, W * 0.52, gy - 20 * mu, mu * 2.0, '#05030c');
+        drawCannon(ctx, W * 0.52, gy - 20 * mu, mu * 2.4, '#05030c');
         // firing cycle: flash + drifting smoke rings every 8s
         const phase = t % 8;
-        const mx = W * 0.52 - 170 * mu, my = gy - 20 * mu - 166 * mu;
+        const mx = W * 0.52 - 204 * mu, my = gy - 20 * mu - 199 * mu;
         if (phase < 0.6) {
             const fl = 1 - phase / 0.6;
             const fg = ctx.createRadialGradient(mx, my, 2, mx, my, 90 * mu * fl);
@@ -1227,6 +1253,365 @@ export function drawScene(ctx, template, W, H, t, text) {
         drawParticles(ctx, W, H, t, st.particles.slice(0, 16), 'rgba(255, 220, 150, 0.5)');
         drawScrim(ctx, W, H * 0.34, H * 0.28);
         drawTextBlock(ctx, W, H, H * 0.34, t, text, '#ffe9b8');
+    }
+
+    else if (template === 'quran') {
+        // المصحف: an open mushaf on a rehl stand, light streaming down.
+        const st = stateFor('quran', 167);
+        const bg = ctx.createRadialGradient(W / 2, H * 0.44, 10, W / 2, H * 0.48, Math.max(W, H) * 0.85);
+        bg.addColorStop(0, '#0e3328');
+        bg.addColorStop(1, '#040f0a');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+        drawGeoLattice(ctx, W, H, t, 0.05);
+        // gentle light rays from above
+        for (let i = 0; i < 3; i++) {
+            const ang = (i - 1) * 0.20 + 0.03 * Math.sin(t * 0.8 + i);
+            ctx.save();
+            ctx.translate(W / 2, -H * 0.05);
+            ctx.rotate(ang);
+            const ray = ctx.createLinearGradient(0, 0, 0, H * 0.75);
+            ray.addColorStop(0, 'rgba(255, 224, 160, 0.12)');
+            ray.addColorStop(1, 'rgba(255, 224, 160, 0)');
+            ctx.fillStyle = ray;
+            ctx.beginPath();
+            ctx.moveTo(-14 * mu, 0);
+            ctx.lineTo(14 * mu, 0);
+            ctx.lineTo(80 * mu, H * 0.75);
+            ctx.lineTo(-80 * mu, H * 0.75);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+        drawCrescent(ctx, W * 0.84, H * 0.09, 40 * mu, 1 + 0.05 * Math.sin(t * 0.8));
+        // glow behind the book
+        const gy = H * 0.60;
+        const glow = ctx.createRadialGradient(W / 2, gy, 10, W / 2, gy, W * 0.48);
+        glow.addColorStop(0, `rgba(255, 205, 110, ${0.26 + 0.05 * Math.sin(t * 1.2)})`);
+        glow.addColorStop(1, 'rgba(255, 205, 110, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath(); ctx.arc(W / 2, gy, W * 0.48, 0, Math.PI * 2); ctx.fill();
+        // rehl (X-shaped stand)
+        const bw = Math.min(W * 0.60, H * 0.40);
+        ctx.strokeStyle = '#4a2e12';
+        ctx.lineWidth = 10 * mu;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(W / 2 - bw * 0.32, gy + 30 * mu);
+        ctx.lineTo(W / 2 + bw * 0.28, gy + 150 * mu);
+        ctx.moveTo(W / 2 + bw * 0.32, gy + 30 * mu);
+        ctx.lineTo(W / 2 - bw * 0.28, gy + 150 * mu);
+        ctx.stroke();
+        // open book: two curved pages
+        const pageH = bw * 0.36;
+        ctx.save();
+        ctx.translate(W / 2, gy);
+        for (const dir of [-1, 1]) {
+            ctx.beginPath();
+            ctx.moveTo(0, -pageH * 0.15);
+            ctx.quadraticCurveTo(dir * bw * 0.30, -pageH * 0.62, dir * bw * 0.5, -pageH * 0.28);
+            ctx.quadraticCurveTo(dir * bw * 0.53, pageH * 0.02, dir * bw * 0.5, pageH * 0.26);
+            ctx.quadraticCurveTo(dir * bw * 0.28, pageH * 0.08, 0, pageH * 0.24);
+            ctx.closePath();
+            const pg = ctx.createLinearGradient(0, -pageH * 0.5, 0, pageH * 0.3);
+            pg.addColorStop(0, '#f7ecc9');
+            pg.addColorStop(1, '#e6d29e');
+            ctx.fillStyle = pg;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(120, 86, 34, 0.65)';
+            ctx.lineWidth = 2 * mu;
+            ctx.stroke();
+            // gold script lines on each page
+            ctx.strokeStyle = 'rgba(150, 110, 40, 0.55)';
+            ctx.lineWidth = 2.2 * mu;
+            for (let li = 0; li < 4; li++) {
+                const ly = -pageH * 0.20 + li * pageH * 0.13;
+                ctx.beginPath();
+                ctx.moveTo(dir * bw * 0.10, ly);
+                ctx.quadraticCurveTo(dir * bw * 0.27, ly - 4 * mu, dir * bw * 0.44, ly + 2 * mu);
+                ctx.stroke();
+            }
+        }
+        ctx.restore();
+        // illuminated medallion centered over the seam
+        drawGirihMedallion(ctx, W / 2, gy - pageH * 0.1, 26 * mu, t * 0.05, 0.9);
+        drawParticles(ctx, W, H, t, st.particles.slice(0, 22), 'rgba(255, 214, 140, 0.6)');
+        drawScrim(ctx, W, H * 0.27, H * 0.23);
+        drawTextBlock(ctx, W, H, H * 0.27, t, text, '#ffe3a1');
+    }
+    else if (template === 'suhoor') {
+        // سفرة السحور: a pre-dawn table by an arched window, crescent still out.
+        const st = stateFor('suhoor', 181);
+        const bg = ctx.createLinearGradient(0, 0, 0, H);
+        bg.addColorStop(0, '#0a0f24');
+        bg.addColorStop(1, '#1d1540');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+        drawStars(ctx, W, H * 0.30, t, st.stars.slice(35, 70));
+        // arched window on the left, night sky inside
+        const wx = W * 0.27, wbase = H * 0.68, ww = W * 0.37, wh = H * 0.32;
+        ctx.save();
+        archPath(ctx, wx, wbase, ww, wh);
+        ctx.clip();
+        const nsky = ctx.createLinearGradient(0, wbase - wh, 0, wbase);
+        nsky.addColorStop(0, '#0a1130');
+        nsky.addColorStop(1, '#2a3a6e');
+        ctx.fillStyle = nsky;
+        ctx.fillRect(wx - ww / 2, wbase - wh, ww, wh);
+        ctx.translate(wx - ww / 2, wbase - wh);
+        drawStars(ctx, ww, wh, t, st.stars.slice(0, 30));
+        ctx.restore();
+        drawCrescent(ctx, wx + ww * 0.15, wbase - wh * 0.64, 34 * mu, 1 + 0.05 * Math.sin(t * 0.8));
+        // window frame + mullions
+        ctx.strokeStyle = 'rgba(214, 178, 94, 0.6)';
+        ctx.lineWidth = 5 * mu;
+        archPath(ctx, wx, wbase, ww, wh);
+        ctx.stroke();
+        ctx.lineWidth = 2.5 * mu;
+        ctx.beginPath();
+        ctx.moveTo(wx, wbase);
+        ctx.lineTo(wx, wbase - wh + ww * 0.30);
+        ctx.moveTo(wx - ww / 2, wbase - wh * 0.42);
+        ctx.lineTo(wx + ww / 2, wbase - wh * 0.42);
+        ctx.stroke();
+        // warm interior light from the right
+        const wl = ctx.createRadialGradient(W, H * 0.45, 10, W, H * 0.45, W * 0.9);
+        wl.addColorStop(0, 'rgba(255, 190, 100, 0.15)');
+        wl.addColorStop(1, 'rgba(255, 190, 100, 0)');
+        ctx.fillStyle = wl;
+        ctx.fillRect(0, 0, W, H);
+        // hanging fanous, top right
+        drawFanousEgy(ctx, W * 0.85, -10, H * 0.07, mu * 1.1, 0.04 * Math.sin(t * 0.8), 0.85 + 0.1 * Math.sin(t * 2.1), t);
+        // table
+        const ty = H * 0.84;
+        ctx.fillStyle = '#120a1e';
+        ctx.fillRect(0, ty, W, H - ty);
+        ctx.fillStyle = 'rgba(214, 178, 94, 0.22)';
+        ctx.fillRect(0, ty, W, 3 * mu);
+        // the spread: dallah, dates bowl, two steaming cups
+        ctx.save();
+        ctx.translate(W * 0.86, ty);
+        ctx.scale(2.1, 2.1);
+        ctx.fillStyle = '#3a2410';
+        ctx.beginPath();
+        ctx.moveTo(-24 * mu, 0);
+        ctx.quadraticCurveTo(-32 * mu, -58 * mu, -10 * mu, -76 * mu);
+        ctx.lineTo(10 * mu, -76 * mu);
+        ctx.quadraticCurveTo(32 * mu, -58 * mu, 24 * mu, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#3a2410';
+        ctx.lineWidth = 6 * mu;
+        ctx.beginPath();
+        ctx.moveTo(-8 * mu, -68 * mu);
+        ctx.quadraticCurveTo(-38 * mu, -82 * mu, -32 * mu, -106 * mu);
+        ctx.stroke();
+        ctx.fillRect(-12 * mu, -84 * mu, 24 * mu, 8 * mu);
+        ctx.beginPath(); ctx.arc(0, -90 * mu, 5 * mu, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 200, 110, 0.5)';
+        ctx.lineWidth = 2 * mu;
+        ctx.beginPath();
+        ctx.moveTo(24 * mu, -2 * mu);
+        ctx.quadraticCurveTo(32 * mu, -58 * mu, 10 * mu, -76 * mu);
+        ctx.stroke();
+        ctx.restore();
+        drawDatesBowl(ctx, W * 0.53, ty - 4 * mu, mu * 1.9);
+        drawCup(ctx, W * 0.30, ty, mu * 2.1, t, 0.4);
+        drawCup(ctx, W * 0.69, ty, mu * 1.6, t, 2.2);
+        drawParticles(ctx, W, H, t, st.particles.slice(0, 18), 'rgba(255, 209, 128, 0.5)');
+        drawScrim(ctx, W, H * 0.21, H * 0.22);
+        drawTextBlock(ctx, W, H, H * 0.21, t, text, '#ffd98a');
+    }
+    else if (template === 'clock') {
+        // ساعة رمضان: an ornate pocket watch on night blue, hands sweeping.
+        const st = stateFor('clock', 199);
+        const bg = ctx.createRadialGradient(W / 2, H * 0.38, 10, W / 2, H * 0.42, Math.max(W, H) * 0.85);
+        bg.addColorStop(0, '#0d1838');
+        bg.addColorStop(1, '#03060f');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+        drawGeoLattice(ctx, W, H, t, 0.04);
+        drawStars(ctx, W, H, t, st.stars.slice(0, 40));
+        const cxp = W / 2, cyp = H * 0.38, cr = Math.min(W, H) * 0.20;
+        // chain from the top + crown loop
+        ctx.strokeStyle = 'rgba(214, 178, 94, 0.55)';
+        ctx.lineWidth = 4 * mu;
+        ctx.beginPath();
+        ctx.moveTo(cxp, 0);
+        ctx.quadraticCurveTo(cxp + 12 * mu, cyp - cr - 70 * mu, cxp, cyp - cr - 30 * mu);
+        ctx.stroke();
+        ctx.beginPath(); ctx.arc(cxp, cyp - cr - 18 * mu, 15 * mu, 0, Math.PI * 2); ctx.stroke();
+        // glow
+        const cg = ctx.createRadialGradient(cxp, cyp, cr * 0.2, cxp, cyp, cr * 2.2);
+        cg.addColorStop(0, `rgba(255, 205, 105, ${0.20 + 0.04 * Math.sin(t * 1.1)})`);
+        cg.addColorStop(1, 'rgba(255, 205, 105, 0)');
+        ctx.fillStyle = cg;
+        ctx.beginPath(); ctx.arc(cxp, cyp, cr * 2.2, 0, Math.PI * 2); ctx.fill();
+        // case + face
+        ctx.beginPath(); ctx.arc(cxp, cyp, cr, 0, Math.PI * 2);
+        ctx.fillStyle = '#0a1428';
+        ctx.fill();
+        ctx.lineWidth = 9 * mu;
+        ctx.strokeStyle = '#d6b25e';
+        ctx.stroke();
+        ctx.beginPath(); ctx.arc(cxp, cyp, cr * 0.88, 0, Math.PI * 2);
+        ctx.lineWidth = 2 * mu;
+        ctx.strokeStyle = 'rgba(214, 178, 94, 0.5)';
+        ctx.stroke();
+        // Arabic-Indic numerals
+        const nums = ['١٢', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩', '١٠', '١١'];
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#e9cf8f';
+        ctx.font = `700 ${Math.round(cr * 0.13)}px Cairo, sans-serif`;
+        for (let i = 0; i < 12; i++) {
+            const a = i * Math.PI / 6 - Math.PI / 2;
+            ctx.fillText(nums[i], cxp + Math.cos(a) * cr * 0.74, cyp + Math.sin(a) * cr * 0.74);
+        }
+        ctx.restore();
+        // small crescent on the face
+        drawCrescent(ctx, cxp, cyp - cr * 0.38, cr * 0.10, 1);
+        // hands: minute turns every 10s, hour slower
+        const minA = (t / 10) * Math.PI * 2 - Math.PI / 2;
+        const hrA = (t / 120) * Math.PI * 2 - Math.PI / 2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#f6c860';
+        ctx.lineWidth = 5 * mu;
+        ctx.beginPath(); ctx.moveTo(cxp, cyp); ctx.lineTo(cxp + Math.cos(minA) * cr * 0.62, cyp + Math.sin(minA) * cr * 0.62); ctx.stroke();
+        ctx.lineWidth = 8 * mu;
+        ctx.beginPath(); ctx.moveTo(cxp, cyp); ctx.lineTo(cxp + Math.cos(hrA) * cr * 0.42, cyp + Math.sin(hrA) * cr * 0.42); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cxp, cyp, 7 * mu, 0, Math.PI * 2); ctx.fillStyle = '#f6c860'; ctx.fill();
+        drawParticles(ctx, W, H, t, st.particles.slice(0, 18), 'rgba(255, 209, 128, 0.5)');
+        drawScrim(ctx, W, H * 0.76, H * 0.26);
+        drawTextBlock(ctx, W, H, H * 0.76, t, text, '#f6c860');
+    }
+    else if (template === 'taraweeh') {
+        // التراويح: a glowing mosque interior, arches receding, worshippers bowing in unison.
+        const st = stateFor('taraweeh', 211);
+        const bg = ctx.createLinearGradient(0, 0, 0, H);
+        bg.addColorStop(0, '#241a0c');
+        bg.addColorStop(1, '#0a0603');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+        const floorY = H * 0.86;
+        // receding mihrab arches
+        for (let i = 0; i < 3; i++) {
+            const f = 1 - i * 0.20;
+            ctx.strokeStyle = `rgba(214, 178, 94, ${0.55 - i * 0.15})`;
+            ctx.lineWidth = (6 - i * 1.5) * mu;
+            archPath(ctx, W / 2, floorY, W * 0.88 * f, H * 0.62 * f);
+            ctx.stroke();
+        }
+        // warm glow deep in the hall
+        const hg = ctx.createRadialGradient(W / 2, floorY - H * 0.22, 10, W / 2, floorY - H * 0.22, W * 0.55);
+        hg.addColorStop(0, `rgba(255, 200, 110, ${0.30 + 0.05 * Math.sin(t * 1.3)})`);
+        hg.addColorStop(1, 'rgba(255, 200, 110, 0)');
+        ctx.fillStyle = hg;
+        ctx.beginPath(); ctx.arc(W / 2, floorY - H * 0.22, W * 0.55, 0, Math.PI * 2); ctx.fill();
+        // hanging fanawis
+        drawFanousEgy(ctx, W * 0.30, -10, H * 0.08, mu * 0.8, 0.04 * Math.sin(t * 0.8), 0.85 + 0.1 * Math.sin(t * 2.0), t);
+        drawFanousEgy(ctx, W * 0.70, -10, H * 0.12, mu * 0.7, 0.05 * Math.sin(t * 0.9 + 2), 0.85 + 0.1 * Math.sin(t * 1.7 + 1), t);
+        drawFanousEgy(ctx, W * 0.5, -10, H * 0.04, mu * 0.6, 0.04 * Math.sin(t * 0.7 + 4), 0.85 + 0.1 * Math.sin(t * 2.4 + 2), t);
+        // a row of worshippers in unison
+        const bow = Math.max(0, Math.sin(t * 0.9)) * 0.5;
+        for (let i = 0; i < 6; i++) {
+            const fx = W * (0.15 + i * 0.14);
+            const fs = mu * (1.05 + 0.12 * Math.sin(i * 2.1));
+            ctx.save();
+            ctx.translate(fx, floorY);
+            ctx.scale(fs, fs);
+            ctx.fillStyle = '#05030c';
+            const lean = bow * 34;
+            ctx.beginPath();
+            ctx.moveTo(-16, 0);
+            ctx.quadraticCurveTo(-18 - lean * 0.4, -70, -6 - lean, -96);
+            ctx.quadraticCurveTo(0 - lean, -104, 6 - lean, -96);
+            ctx.quadraticCurveTo(18 - lean * 0.4, -70, 16, 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath(); ctx.arc(-lean * 1.1, -110, 10, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+        }
+        // floor sheen
+        ctx.fillStyle = 'rgba(214, 178, 94, 0.08)';
+        ctx.fillRect(0, floorY, W, H - floorY);
+        drawParticles(ctx, W, H, t, st.particles.slice(0, 16), 'rgba(255, 214, 140, 0.45)');
+        drawScrim(ctx, W, H * 0.28, H * 0.24);
+        drawTextBlock(ctx, W, H, H * 0.28, t, text, '#ffe9b8');
+    }
+    else if (template === 'misbaha') {
+        // المسبحة: amber prayer beads draped on dark cloth, a glow traveling bead to bead.
+        const st = stateFor('misbaha', 223);
+        const bg = ctx.createRadialGradient(W / 2, H * 0.44, 10, W / 2, H * 0.48, Math.max(W, H) * 0.85);
+        bg.addColorStop(0, '#0e241c');
+        bg.addColorStop(1, '#040d09');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+        drawGeoLattice(ctx, W, H, t, 0.04);
+        // draped strand: U-shaped bezier
+        const x0 = W * 0.16, y0 = H * 0.26;
+        const x1 = W * 0.84, y1 = H * 0.26;
+        const cxx = W * 0.5, cyy = H * 0.90;
+        const N = 27;
+        const pts = [];
+        for (let i = 0; i < N; i++) {
+            const f = i / (N - 1);
+            pts.push([
+                (1 - f) * (1 - f) * x0 + 2 * (1 - f) * f * cxx + f * f * x1,
+                (1 - f) * (1 - f) * y0 + 2 * (1 - f) * f * cyy + f * f * y1,
+            ]);
+        }
+        // string
+        ctx.strokeStyle = 'rgba(214, 178, 94, 0.4)';
+        ctx.lineWidth = 2 * mu;
+        ctx.beginPath();
+        pts.forEach(([px, py], i) => { if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py); });
+        ctx.stroke();
+        // beads with a traveling glow
+        const glowI = Math.floor(t * 6) % N;
+        for (let i = 0; i < N; i++) {
+            const [px, py] = pts[i];
+            const isGlow = i === glowI;
+            const br = 10 * mu;
+            if (isGlow) {
+                const gg = ctx.createRadialGradient(px, py, 1, px, py, br * 3);
+                gg.addColorStop(0, 'rgba(255, 220, 150, 0.8)');
+                gg.addColorStop(1, 'rgba(255, 200, 110, 0)');
+                ctx.fillStyle = gg;
+                ctx.beginPath(); ctx.arc(px, py, br * 3, 0, Math.PI * 2); ctx.fill();
+            }
+            const bgc = ctx.createRadialGradient(px - br * 0.35, py - br * 0.35, 1, px, py, br * 1.15);
+            bgc.addColorStop(0, isGlow ? '#ffe0a0' : '#e8a04c');
+            bgc.addColorStop(1, '#7a4413');
+            ctx.fillStyle = bgc;
+            ctx.beginPath(); ctx.arc(px, py, br, 0, Math.PI * 2); ctx.fill();
+        }
+        // tassel at the bottom of the U with a crescent charm
+        const [tx2, ty2] = pts[Math.floor(N / 2)];
+        ctx.strokeStyle = '#d6b25e';
+        ctx.lineWidth = 3 * mu;
+        ctx.beginPath(); ctx.moveTo(tx2, ty2 + 12 * mu); ctx.lineTo(tx2, ty2 + 40 * mu); ctx.stroke();
+        ctx.fillStyle = '#d6b25e';
+        ctx.beginPath();
+        ctx.moveTo(tx2 - 10 * mu, ty2 + 40 * mu);
+        ctx.lineTo(tx2 + 10 * mu, ty2 + 40 * mu);
+        ctx.lineTo(tx2 + 6 * mu, ty2 + 58 * mu);
+        ctx.lineTo(tx2 - 6 * mu, ty2 + 58 * mu);
+        ctx.closePath();
+        ctx.fill();
+        for (let k = -3; k <= 3; k++) {
+            ctx.strokeStyle = 'rgba(214, 178, 94, 0.7)';
+            ctx.lineWidth = 2 * mu;
+            ctx.beginPath();
+            ctx.moveTo(tx2 + k * 3 * mu, ty2 + 58 * mu);
+            ctx.lineTo(tx2 + k * 4.5 * mu, ty2 + 92 * mu);
+            ctx.stroke();
+        }
+        drawCrescent(ctx, tx2, ty2 + 76 * mu, 9 * mu, 1 + 0.05 * Math.sin(t * 0.9));
+        drawParticles(ctx, W, H, t, st.particles.slice(0, 16), 'rgba(255, 209, 128, 0.45)');
+        drawScrim(ctx, W, H * 0.76, H * 0.24);
+        drawTextBlock(ctx, W, H, H * 0.76, t, text, '#ffe3a1');
     }
     else {
         // minaret → مآذن القاهرة: Cairo skyline of historic minarets at dusk.
