@@ -9,7 +9,7 @@ const STR = {
     title: 'أنشئ فيديو تهنئة رمضانية',
     sub: 'اختر القالب، اكتب تهنئتك واسمك، ثم حمّل الفيديو جاهزًا للمشاركة. مجاني، بدون اشتراك، بدون علامة مائية.',
     template: 'القالب',
-    templates: { night: 'المسحراتي', lanterns: 'خيامية', crescent: 'هلال النيل', mosque: 'القلعة', fanous: 'الفانوس', calligraphy: 'مشربية', iftar: 'مدفع الإفطار', geo: 'زخرفة إسلامية', minaret: 'مآذن القاهرة' },
+    templates: { night: 'المسحراتي', lanterns: 'خيامية', crescent: 'هلال النيل', mosque: 'القلعة', fanous: 'الفانوس', calligraphy: 'مشربية', iftar: 'مدفع الإفطار', geo: 'زخرفة إسلامية', minaret: 'مآذن القاهرة', dawn: 'فجر القاهرة', quran: 'المصحف', suhoor: 'سفرة السحور', clock: 'ساعة رمضان', taraweeh: 'التراويح', misbaha: 'المسبحة' },
     format: 'المقاس',
     formats: { story: 'ستوري 9:16', square: 'مربع 1:1', wide: 'عريض 16:9' },
     lang: 'اللغة',
@@ -43,7 +43,7 @@ const STR = {
     title: 'Create a Ramadan greeting video',
     sub: 'Pick a template, write your greeting and name, then download the video, ready to share. Free, no sign-up, no watermark.',
     template: 'Template',
-    templates: { night: 'Mesaharaty', lanterns: 'Khayamiya', crescent: 'Nile crescent', mosque: 'The Citadel', fanous: 'The fanous', calligraphy: 'Mashrabiya', iftar: 'Iftar cannon', geo: 'Islamic pattern', minaret: 'Cairo minarets' },
+    templates: { night: 'Mesaharaty', lanterns: 'Khayamiya', crescent: 'Nile crescent', mosque: 'The Citadel', fanous: 'The fanous', calligraphy: 'Mashrabiya', iftar: 'Iftar cannon', geo: 'Islamic pattern', minaret: 'Cairo minarets', dawn: 'Cairo dawn', quran: 'The Quran', suhoor: 'Suhoor table', clock: 'Ramadan watch', taraweeh: 'Taraweeh arches', misbaha: 'Prayer beads' },
     format: 'Size',
     formats: { story: 'Story 9:16', square: 'Square 1:1', wide: 'Wide 16:9' },
     lang: 'Language',
@@ -254,6 +254,58 @@ function download() {
   a.remove();
 }
 
+// Live thumbnail grid: each tile is a small canvas animating its own template.
+const gridTiles = [];
+let gridRaf = 0;
+let gridLast = 0;
+let gridIo = null;
+function buildTemplateGrid(containerId, entries, current, onPick) {
+  const box = $(containerId);
+  box.textContent = '';
+  box.classList.add('rk-grid');
+  gridTiles.length = 0;
+  const text = () => ({ line1: '', line2: '', name: '', namePrefix: '', font: 'Cairo, Tajawal, sans-serif', dir: 'rtl', photo: null });
+  for (const [value, label] of entries) {
+    const tile = document.createElement('button');
+    tile.type = 'button';
+    tile.className = 'rk-tile';
+    tile.setAttribute('aria-pressed', String(value === current));
+    const cv = document.createElement('canvas');
+    cv.width = 108; cv.height = 192;
+    const name = document.createElement('span');
+    name.className = 'rk-tile-name';
+    name.textContent = label;
+    tile.appendChild(cv);
+    tile.appendChild(name);
+    tile.addEventListener('click', () => {
+      onPick(value);
+      for (const child of box.children) child.setAttribute('aria-pressed', String(child === tile));
+      startPreview();
+    });
+    box.appendChild(tile);
+    gridTiles.push({ ctx: cv.getContext('2d'), template: value, phase: Math.random() * 14 });
+  }
+  cancelAnimationFrame(gridRaf);
+  const tick = (now) => {
+    gridRaf = requestAnimationFrame(tick);
+    if (now - gridLast < 100) return; // ~10fps is plenty for thumbnails
+    gridLast = now;
+    const t = now / 1000;
+    for (const tile of gridTiles) {
+      if (!tile.ctx) continue;
+      drawScene(tile.ctx, tile.template, 108, 192, (t + tile.phase) % 20, text());
+    }
+  };
+  // animate only while the grid is on screen
+  if (gridIo) gridIo.disconnect();
+  const io = new IntersectionObserver((obs) => {
+    if (obs[0].isIntersecting) { gridRaf = requestAnimationFrame(tick); }
+    else { cancelAnimationFrame(gridRaf); }
+  });
+  io.observe(box);
+  gridIo = io;
+}
+
 function buildPills(containerId, entries, current, onPick) {
   const box = $(containerId);
   box.textContent = '';
@@ -298,7 +350,7 @@ function renderControls() {
   $('rk-line1').dir = t.dir;
   $('rk-line2').dir = t.dir;
   $('rk-name').dir = t.dir;
-  buildPills('rk-templates', Object.entries(t.templates), state.template, (v) => { state.template = v; });
+  buildTemplateGrid('rk-templates', Object.entries(t.templates), state.template, (v) => { state.template = v; });
   buildPills('rk-formats', Object.entries(t.formats), state.format, (v) => { state.format = v; });
   buildPills('rk-langs', [['ar', 'العربية'], ['en', 'English']], state.lang, (v) => {
     state.lang = v;
