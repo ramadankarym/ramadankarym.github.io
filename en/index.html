@@ -27,10 +27,26 @@
     <link rel="icon" type="image/svg+xml" href="../ramadan-logo.svg" />
     <link rel="manifest" href="../manifest.webmanifest" />
     <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
-    <script>if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('../sw.js').catch(function () {}); }); }</script>
+    <script>if ('serviceWorker' in navigator) { var swRef=false;navigator.serviceWorker.addEventListener('controllerchange',function(){if(!swRef){swRef=true;window.location.reload();}}); window.addEventListener('load', function () { navigator.serviceWorker.register('../sw.js').catch(function () {}); }); }</script>
     <script src="../app.js" defer></script>
     <script src="../tool.js" type="module"></script>
     <script src="../daily-card.js" type="module"></script>
+      <style id="v6-critical">
+.target-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
+.target-pill{min-height:32px;padding:0 14px;border:1px solid rgba(228,199,131,.30);border-radius:999px;color:#d9cca9;background:rgba(228,199,131,.05);cursor:pointer;font:inherit;font-size:12.5px;font-weight:600}
+.target-pill[aria-pressed="true"]{border-color:rgba(228,199,131,.85);color:#081b17;background:linear-gradient(135deg,#e9cf8f,#d3af62);font-weight:800}
+.nights-line{margin:10px 0 0;color:#f6c860;font-size:21px;font-weight:700}
+.hero-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.daily-card-section{padding:34px 16px 8px;text-align:center}
+.daily-card-panel{margin:18px auto 0;max-width:420px;border:1px solid rgba(228,199,131,.28);border-radius:20px;background:rgba(7,27,23,.5);padding:14px;box-sizing:border-box}
+#daily-card-canvas{width:100%;height:auto;display:block;border-radius:12px}
+.daily-card-actions{display:flex;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+.rk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rk-tile{position:relative;padding:0;border:2px solid rgba(228,199,131,.22);border-radius:12px;overflow:hidden;background:#071b17;cursor:pointer}
+.rk-tile canvas{width:100%;height:auto;display:block}
+.rk-tile-name{position:absolute;inset-inline:0;bottom:0;padding:10px 4px 5px;font-size:11px;font-weight:700;color:#fdf3d7;background:linear-gradient(transparent,rgba(4,18,14,.92) 65%)}
+@media (max-width:420px){.rk-grid{gap:7px}.rk-tile-name{font-size:10px}}
+    </style>
   </head>
   <body>
     <div class="page-shell">
@@ -176,7 +192,7 @@
           <h2 class="creator-title" id="daily-card-title">Today's card</h2>
           <p class="creator-sub">A fresh Ramadan countdown card every day, ready to download and share to your story or WhatsApp groups.</p>
           <div class="daily-card-panel">
-            <canvas id="daily-card-canvas" width="1080" height="1080" aria-label="Today's card"></canvas>
+            <canvas id="daily-card-canvas" width="1080" height="1080" style="width:100%;height:auto;display:block;border-radius:12px" aria-label="Today's card"></canvas>
             <div class="daily-card-actions">
               <button class="share-button" id="daily-download" type="button">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
