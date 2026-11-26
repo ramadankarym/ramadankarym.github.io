@@ -877,6 +877,18 @@ function drawMamlukMinaret(ctx, x, baseY, h, w, color) {
     ctx.beginPath(); ctx.arc(x, baseY - h * 1.24, w * 0.12, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
 }
+function drawBird(ctx, x, y, s, flap, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.4 * s;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x - 8 * s, y - flap);
+    ctx.quadraticCurveTo(x, y + 3 * s, x + 8 * s, y - flap);
+    ctx.stroke();
+    ctx.restore();
+}
+
 export function drawScene(ctx, template, W, H, t, text) {
     const u = W / 1080;
     const mu = Math.min(W, H) / 1080;
@@ -1154,6 +1166,67 @@ export function drawScene(ctx, template, W, H, t, text) {
         drawParticles(ctx, W, H, t, st.particles.slice(0, 24), 'rgba(255, 209, 128, 0.5)');
         drawScrim(ctx, W, H * 0.76, H * 0.26);
         drawTextBlock(ctx, W, H, H * 0.76, t, text, '#f6c860');
+    }
+    else if (template === 'dawn') {
+        // فجر القاهرة: first light over a mosque silhouette, birds waking up.
+        const st = stateFor('dawn', 151);
+        const sky = ctx.createLinearGradient(0, 0, 0, H);
+        sky.addColorStop(0, '#0c1430');
+        sky.addColorStop(0.45, '#3b2d5e');
+        sky.addColorStop(0.72, '#b05a6a');
+        sky.addColorStop(0.92, '#f2a06a');
+        sky.addColorStop(1, '#ffd28e');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, W, H);
+        drawStars(ctx, W, H * 0.3, t, st.stars.slice(0, 30));
+        const pulse = 0.85 + 0.15 * Math.sin(t * 0.6);
+        const dg = ctx.createRadialGradient(W / 2, H * 0.86, 10, W / 2, H * 0.86, W * 0.75);
+        dg.addColorStop(0, `rgba(255, 214, 140, ${0.55 * pulse})`);
+        dg.addColorStop(1, 'rgba(255, 214, 140, 0)');
+        ctx.fillStyle = dg;
+        ctx.fillRect(0, 0, W, H);
+        // sweeping dawn light rays fanning from the horizon glow
+        for (let i = 0; i < 4; i++) {
+            const ang = -Math.PI / 2 + (i - 1.5) * 0.28 + 0.06 * Math.sin(t * 0.9 + i);
+            ctx.save();
+            ctx.translate(W / 2, H * 0.86);
+            ctx.rotate(ang);
+            const ray = ctx.createLinearGradient(0, 0, 0, -H);
+            ray.addColorStop(0, 'rgba(255, 224, 160, 0.16)');
+            ray.addColorStop(1, 'rgba(255, 224, 160, 0)');
+            ctx.fillStyle = ray;
+            ctx.beginPath();
+            ctx.moveTo(-14 * mu, 0);
+            ctx.lineTo(14 * mu, 0);
+            ctx.lineTo(60 * mu, -H);
+            ctx.lineTo(-60 * mu, -H);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+        drawCrescent(ctx, W * 0.16, H * 0.10, 40 * mu, 1 + 0.04 * Math.sin(t * 0.7));
+        for (let i = 0; i < 3; i++) {
+            const cx2 = ((t * (0.010 + i * 0.005) + i * 0.4) % 1.3 - 0.15) * W;
+            const cyy = H * (0.16 + i * 0.08);
+            ctx.fillStyle = 'rgba(255, 220, 200, 0.10)';
+            ctx.beginPath();
+            ctx.ellipse(cx2, cyy, W * 0.15, 9 * mu, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        for (let i = 0; i < 7; i++) {
+            const bx = ((t * 0.045 + i * 0.17) % 1.2 - 0.1) * W;
+            drawBird(ctx, bx, H * (0.20 + i * 0.045), mu * (0.8 + i * 0.15), Math.sin(t * 5 + i) * 4 * mu, 'rgba(30, 22, 40, 0.85)');
+        }
+        const gy = H * 0.88;
+        ctx.save();
+        ctx.translate(W / 2, gy);
+        ctx.scale(0.8, 0.8);
+        ctx.translate(-W / 2, -gy);
+        drawMosque(ctx, W, H, gy, '#0b0a18');
+        ctx.restore();
+        drawParticles(ctx, W, H, t, st.particles.slice(0, 16), 'rgba(255, 220, 150, 0.5)');
+        drawScrim(ctx, W, H * 0.34, H * 0.28);
+        drawTextBlock(ctx, W, H, H * 0.34, t, text, '#ffe9b8');
     }
     else {
         // minaret → مآذن القاهرة: Cairo skyline of historic minarets at dusk.
