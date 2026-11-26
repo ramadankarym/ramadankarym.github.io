@@ -30,6 +30,7 @@
     <script>if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('../sw.js').catch(function () {}); }); }</script>
     <script src="../app.js" defer></script>
     <script src="../tool.js" type="module"></script>
+    <script src="../daily-card.js" type="module"></script>
   </head>
   <body>
     <div class="page-shell">
@@ -51,6 +52,7 @@
         <section class="hero" aria-labelledby="page-title">
           <div class="sky-art" aria-hidden="true">
             <span class="star star-one">✦</span><span class="star star-two">✧</span><span class="star star-three">✦</span>
+            <span class="moon-rays" aria-hidden="true"></span>
             <svg class="hero-moon" viewBox="0 0 120 120" fill="none"><path d="M82.6 12.7A48 48 0 1 0 107.3 97a51.8 51.8 0 0 1-24.7-84.3Z" fill="currentColor"/><path d="m31 16 1.7 4.3 4.3 1.7-4.3 1.7L31 28l-1.7-4.3L25 22l4.3-1.7L31 16Z" fill="currentColor"/><circle cx="97" cy="38" r="2" fill="currentColor"/></svg>
             <div class="lantern lantern-left"><span class="lantern-cap"></span><span class="lantern-glass"></span><span class="lantern-base"></span></div>
             <div class="lantern lantern-right"><span class="lantern-cap"></span><span class="lantern-glass"></span><span class="lantern-base"></span></div>
@@ -88,6 +90,10 @@
           <p class="intro">Counting the moments until the month of goodness and serenity arrives.</p>
 
           <div class="countdown-panel" aria-label="Countdown to the start of Ramadan">
+            <div class="target-toggle" role="group" aria-label="Countdown target">
+              <button type="button" class="target-pill" id="target-sunset" aria-pressed="true">First-night sunset</button>
+              <button type="button" class="target-pill" id="target-fajr" aria-pressed="false">First fasting dawn</button>
+            </div>
             <h2 class="countdown-heading"><span class="heading-sparkle" aria-hidden="true">✧</span> Until Ramadan begins <span class="heading-sparkle" aria-hidden="true">✧</span></h2>
             <div class="timer-grid" role="timer" aria-label="Time left until Ramadan">
               <div class="time-unit"><span class="time-value" id="days">000</span><span class="time-label">Days</span></div>
@@ -98,6 +104,7 @@
               <span class="time-separator" aria-hidden="true">:</span>
               <div class="time-unit"><span class="time-value seconds-value" id="seconds">00</span><span class="time-label">Seconds</span></div>
             </div>
+            <p class="nights-line" id="nights-line"></p>
             <p class="timer-status" id="timer-status" aria-live="polite">Counting together...</p>
           </div>
 
@@ -109,10 +116,20 @@
             <span class="date-arrow" aria-hidden="true">✦</span>
           </div>
 
+          <div class="hero-actions">
           <button class="share-button" id="share-button" type="button">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="1.6"/><path d="m8.7 10.7 6.6-4.4m-6.6 9 6.6 4.4" stroke="currentColor" stroke-width="1.6"/></svg>
             <span id="share-label">Share the countdown</span>
           </button>
+          <button class="share-button action-mini" id="calendar-button" type="button" aria-label="Add to calendar">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3v3m10-3v3M4.5 9.5h15M5.8 5h12.4A1.8 1.8 0 0 1 20 6.8v11.4a1.8 1.8 0 0 1-1.8 1.8H5.8A1.8 1.8 0 0 1 4 18.2V6.8A1.8 1.8 0 0 1 5.8 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 12v4m0 0 2-2m-2 2-2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Add to calendar</span>
+          </button>
+          <button class="share-button action-mini" id="fullscreen-button" type="button" aria-label="Fullscreen">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span>Fullscreen</span>
+          </button>
+          </div>
           <div class="ambience-controls" aria-label="Ramadan ambience settings">
             <button class="ambience-button" id="music-toggle" type="button" aria-pressed="false">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18V5l12-2v13M9 8l12-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="6" cy="18" rx="3" ry="2" stroke="currentColor" stroke-width="1.6"/><ellipse cx="18" cy="16" rx="3" ry="2" stroke="currentColor" stroke-width="1.6"/></svg>
@@ -153,6 +170,24 @@
             }, true);
           })();
           </script>
+        </section>
+
+        <section class="daily-card-section" id="daily-card" aria-labelledby="daily-card-title">
+          <h2 class="creator-title" id="daily-card-title">Today's card</h2>
+          <p class="creator-sub">A fresh Ramadan countdown card every day, ready to download and share to your story or WhatsApp groups.</p>
+          <div class="daily-card-panel">
+            <canvas id="daily-card-canvas" width="1080" height="1080" aria-label="Today's card"></canvas>
+            <div class="daily-card-actions">
+              <button class="share-button" id="daily-download" type="button">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Download the card</span>
+              </button>
+              <button class="share-button action-mini" id="daily-share" type="button">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="1.6"/><path d="m8.7 10.7 6.6-4.4m-6.6 9 6.6 4.4" stroke="currentColor" stroke-width="1.6"/></svg>
+                <span>Share it</span>
+              </button>
+            </div>
+          </div>
         </section>
 
         <section class="creator" id="creator" aria-labelledby="creator-title">
