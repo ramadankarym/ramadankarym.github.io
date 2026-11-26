@@ -1,5 +1,5 @@
 // Daily shareable countdown card: renders a fresh design per day, download/share ready.
-import { drawScene } from './scenes.js?v=7';
+import { drawScene } from './scenes.js?v=8';
 
 const canvas = document.getElementById('daily-card-canvas');
 if (canvas) {
