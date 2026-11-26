@@ -1,5 +1,5 @@
 // Daily shareable countdown card: renders a fresh design per day, download/share ready.
-import { drawScene } from './scenes.js?v=8';
+import { drawScene } from './scenes.js?v=9';
 
 const canvas = document.getElementById('daily-card-canvas');
 if (canvas) {
@@ -8,6 +8,8 @@ if (canvas) {
   const AR_DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
   const AR_MONTHS = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
   const arDigits = (n) => String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+  const EN = (document.documentElement.lang || '').toLowerCase().startsWith('en');
+  const digits = EN ? (n) => String(n) : arDigits;
 
   const daysLeft = () => Math.max(0, Math.ceil((COUNTDOWN_TARGET.getTime() - Date.now()) / 86400000));
 
@@ -29,6 +31,7 @@ if (canvas) {
 
   function arToday() {
     const now = new Date();
+    if (EN) return now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     return AR_DAYS[now.getDay()] + '، ' + arDigits(now.getDate()) + ' ' + AR_MONTHS[now.getMonth()] + ' ' + arDigits(now.getFullYear());
   }
 
@@ -39,12 +42,15 @@ if (canvas) {
     drawScene(ctx, templateOfTheDay(), W, H, 6.5, {
       line1: '', line2: '', name: '', namePrefix: '', font: 'Cairo, Tajawal, sans-serif', dir: 'rtl', photo: null,
     });
-    // deepen top and bottom for legibility
+    // calm the scene into an ambient backdrop: even dim + stronger top/bottom
+    ctx.fillStyle = 'rgba(4, 18, 14, 0.45)';
+    ctx.fillRect(0, 0, W, H);
     const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0, 'rgba(4, 18, 14, 0.72)');
-    grad.addColorStop(0.38, 'rgba(4, 18, 14, 0.15)');
-    grad.addColorStop(0.72, 'rgba(4, 18, 14, 0.55)');
-    grad.addColorStop(1, 'rgba(4, 18, 14, 0.85)');
+    grad.addColorStop(0, 'rgba(4, 18, 14, 0.66)');
+    grad.addColorStop(0.18, 'rgba(4, 18, 14, 0.34)');
+    grad.addColorStop(0.28, 'rgba(4, 18, 14, 0.10)');
+    grad.addColorStop(0.75, 'rgba(4, 18, 14, 0.15)');
+    grad.addColorStop(1, 'rgba(4, 18, 14, 0.62)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, W, H);
 
@@ -52,50 +58,68 @@ if (canvas) {
     const cream = '#fdf3d7';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.direction = 'rtl';
+    ctx.direction = EN ? 'ltr' : 'rtl';
 
     // header
     ctx.fillStyle = cream;
     ctx.globalAlpha = 0.92;
-    ctx.font = `600 ${W * 0.037}px Tajawal, Cairo, sans-serif`;
-    ctx.fillText(arToday(), W / 2, H * 0.115);
+    ctx.font = `600 ${W * 0.036}px Tajawal, Cairo, sans-serif`;
+    ctx.fillText(arToday(), W / 2, H * 0.085);
     ctx.globalAlpha = 1;
 
     // ornament divider
     ctx.strokeStyle = 'rgba(246, 200, 96, 0.55)';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(W * 0.30, H * 0.165); ctx.lineTo(W * 0.44, H * 0.165);
-    ctx.moveTo(W * 0.56, H * 0.165); ctx.lineTo(W * 0.70, H * 0.165);
+    ctx.moveTo(W * 0.30, H * 0.13); ctx.lineTo(W * 0.44, H * 0.13);
+    ctx.moveTo(W * 0.56, H * 0.13); ctx.lineTo(W * 0.70, H * 0.13);
     ctx.stroke();
     ctx.fillStyle = gold;
     ctx.font = `${W * 0.035}px Cairo, sans-serif`;
-    ctx.fillText('✦', W / 2, H * 0.165);
+    ctx.fillText('✦', W / 2, H * 0.13);
 
-    // the big number
+    // glass panel holding the number: calm and consistent over any scene
+    const px = W * 0.10, pw = W * 0.80, py = H * 0.24, ph = H * 0.44, pr = W * 0.045;
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(px, py, pw, ph, pr);
+    ctx.fillStyle = 'rgba(6, 26, 20, 0.80)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(246, 200, 96, 0.40)';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.clip();
+    const sheen = ctx.createLinearGradient(0, py, 0, py + ph);
+    sheen.addColorStop(0, 'rgba(255, 226, 150, 0.08)');
+    sheen.addColorStop(0.25, 'rgba(255, 226, 150, 0)');
+    ctx.fillStyle = sheen;
+    ctx.fillRect(px, py, pw, ph);
+    ctx.restore();
+
+    // the number: balanced, clearly readable on the panel
     const n = daysLeft();
     ctx.save();
-    ctx.shadowColor = 'rgba(246, 200, 96, 0.55)';
-    ctx.shadowBlur = W * 0.045;
+    ctx.shadowColor = 'rgba(246, 200, 96, 0.5)';
+    ctx.shadowBlur = W * 0.032;
     ctx.fillStyle = gold;
-    ctx.font = `800 ${W * 0.42}px Cairo, sans-serif`;
-    ctx.fillText(arDigits(n), W / 2, H * 0.47);
+    ctx.font = `800 ${W * 0.24}px Cairo, sans-serif`;
+    ctx.fillText(digits(n), W / 2, H * 0.415);
     ctx.restore();
 
     // label
     ctx.fillStyle = cream;
-    ctx.font = `700 ${W * 0.075}px Cairo, sans-serif`;
-    ctx.fillText(n === 1 ? 'يوم واحد على رمضان' : 'يوم على رمضان', W / 2, H * 0.70);
+    ctx.font = `700 ${W * 0.064}px Cairo, sans-serif`;
+    ctx.fillText(EN ? (n === 1 ? 'day until Ramadan' : 'days until Ramadan') : (n === 1 ? 'يوم واحد على رمضان' : 'يوم على رمضان'), W / 2, H * 0.565);
 
     // footer: branding + url
     ctx.fillStyle = 'rgba(253, 243, 215, 0.85)';
     ctx.font = `500 ${W * 0.030}px Tajawal, Cairo, sans-serif`;
-    ctx.fillText('رمضان ١٤٤٨ هـ', W / 2, H * 0.885);
+    ctx.fillText(EN ? 'Ramadan 1448 AH' : 'رمضان ١٤٤٨ هـ', W / 2, H * 0.885);
     ctx.fillStyle = gold;
     ctx.font = `700 ${W * 0.032}px Cairo, sans-serif`;
     ctx.direction = 'ltr';
     ctx.fillText('ramadankarym.github.io', W / 2, H * 0.935);
-    ctx.direction = 'rtl';
+    ctx.direction = EN ? 'ltr' : 'rtl';
   }
 
   function download() {
@@ -117,7 +141,7 @@ if (canvas) {
       const file = new File([blob], 'ramadan-card.png', { type: 'image/png' });
       try {
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: 'بطاقة رمضان اليوم', text: 'باقي ' + daysLeft() + ' يوم على رمضان 🌙 https://ramadankarym.github.io/' });
+          await navigator.share({ files: [file], title: EN ? 'Ramadan daily card' : 'بطاقة رمضان اليوم', text: (EN ? daysLeft() + ' days until Ramadan 🌙 ' : 'باقي ' + daysLeft() + ' يوم على رمضان 🌙 ') + 'https://ramadankarym.github.io/' });
           return;
         }
       } catch (e) { if (e && e.name === 'AbortError') return; }
