@@ -1,8 +1,8 @@
 // Ramadan page service worker: offline-first for the site's own static assets.
-const CACHE = 'ramadan-site-v3';
+const CACHE = 'ramadan-site-v4';
 const CORE = [
   './', './index.html', './styles.css', './app.js', './tool.js', './scenes.js',
-  './ramadan-logo.svg', './manifest.webmanifest', './icon-192.png', './icon-512.png'
+  './preview-hero.css', './hero-scene.js', './ramadan-logo.svg', './manifest.webmanifest', './icon-192.png', './icon-512.png'
 ];
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));
