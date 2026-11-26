@@ -24,11 +24,13 @@
     <title>عدّاد رمضان ١٤٤٨ هـ وأداة فيديو التهنئة | موعد بداية الشهر الكريم</title>
     <link rel="canonical" href="https://ramadankarym.github.io/" />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./preview-hero.css" />
     <link rel="icon" type="image/svg+xml" href="./ramadan-logo.svg" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <script>if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); }); }</script>
     <script src="./app.js" defer></script>
+    <script src="./hero-scene.js" type="module"></script>
     <script src="./tool.js" type="module"></script>
   </head>
   <body>
@@ -49,11 +51,17 @@
 
       <main id="home">
         <section class="hero" aria-labelledby="page-title">
+          <canvas id="hero-scene" aria-hidden="true"></canvas>
+          <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="dust" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
           <div class="sky-art" aria-hidden="true">
             <span class="star star-one">✦</span><span class="star star-two">✧</span><span class="star star-three">✦</span>
             <svg class="hero-moon" viewBox="0 0 120 120" fill="none"><path d="M82.6 12.7A48 48 0 1 0 107.3 97a51.8 51.8 0 0 1-24.7-84.3Z" fill="currentColor"/><path d="m31 16 1.7 4.3 4.3 1.7-4.3 1.7L31 28l-1.7-4.3L25 22l4.3-1.7L31 16Z" fill="currentColor"/><circle cx="97" cy="38" r="2" fill="currentColor"/></svg>
             <div class="lantern lantern-left"><span class="lantern-cap"></span><span class="lantern-glass"></span><span class="lantern-base"></span></div>
             <div class="lantern lantern-right"><span class="lantern-cap"></span><span class="lantern-glass"></span><span class="lantern-base"></span></div>
+            <div class="lantern lantern-m1"><span class="lantern-cap"></span><span class="lantern-glass"></span><span class="lantern-base"></span></div>
+            <div class="lantern lantern-m2"><span class="lantern-cap"></span><span class="lantern-glass"></span><span class="lantern-base"></span></div>
+            <div class="lantern lantern-m3"><span class="lantern-cap"></span><span class="lantern-glass"></span><span class="lantern-base"></span></div>
           </div>
 
           <p class="eyebrow"><span class="eyebrow-line"></span> شَهْرٌ نَنْتَظِرُهُ بِقُلُوبٍ مُشْتَاقَةٍ <span class="eyebrow-line"></span></p>
@@ -99,6 +107,11 @@
               <div class="time-unit"><span class="time-value seconds-value" id="seconds">٠٠</span><span class="time-label">ثانية</span></div>
             </div>
             <p class="timer-status" id="timer-status" aria-live="polite">نحسبها معًا...</p>
+            <div class="journey" aria-hidden="true">
+              <span class="journey-label">الطريق إلى رمضان</span>
+              <span class="journey-track"><span class="journey-fill" id="journey-fill"></span><span class="journey-moon" id="journey-moon">☪</span></span>
+              <span class="journey-pct" id="journey-pct"></span>
+            </div>
           </div>
 
           <div class="date-card">
@@ -124,6 +137,7 @@
             </button>
           </div>
           <p class="ambience-status" id="ambience-status" role="status" aria-live="polite"></p>
+          <span class="scroll-hint" aria-hidden="true">اسحب لتحت<br>⌄</span>
           <p class="today-date" id="today-date"></p>
           <audio id="ramadan-music" preload="none" loop></audio>
           <script>
