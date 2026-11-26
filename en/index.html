@@ -9,7 +9,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Ramadan Date" />
-    <meta property="og:title" content="Ramadan 1448 AH Countdown & Greeting Video Maker | Hamada Zakaria" />
+    <meta property="og:title" content="Ramadan 1448 AH Countdown & Greeting Video Maker" />
     <meta property="og:description" content="Follow the Ramadan 1448 AH countdown and create a personalized greeting video to download for free, no sign-up, no watermark." />
     <meta property="og:image" content="https://ramadankarym.github.io/social-card.png" />
     <meta property="og:image:type" content="image/png" />
@@ -17,20 +17,20 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Ramadan Kareem: Ramadan 1448 AH countdown and greeting video maker" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Ramadan 1448 AH Countdown & Greeting Video Maker | Hamada Zakaria" />
+    <meta name="twitter:title" content="Ramadan 1448 AH Countdown & Greeting Video Maker" />
     <meta name="twitter:description" content="Follow the Ramadan 1448 AH countdown and create a personalized greeting video to download for free, no sign-up, no watermark." />
     <meta name="twitter:image" content="https://ramadankarym.github.io/social-card.png" />
     <meta name="twitter:image:alt" content="Ramadan Kareem: Ramadan 1448 AH countdown and greeting video maker" />
     <title>Ramadan 1448 AH Countdown & Greeting Video Maker</title>
     <link rel="canonical" href="https://ramadankarym.github.io/en/" />
-    <link rel="stylesheet" href="../styles.css?v=8" />
+    <link rel="stylesheet" href="../styles.css?v=9" />
     <link rel="icon" type="image/svg+xml" href="../ramadan-logo.svg" />
-    <link rel="manifest" href="../manifest.webmanifest?v=8" />
-    <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=8" />
+    <link rel="manifest" href="../manifest.webmanifest?v=9" />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=9" />
     <script>if ('serviceWorker' in navigator) { var swRef=false;navigator.serviceWorker.addEventListener('controllerchange',function(){if(!swRef){swRef=true;window.location.reload();}}); window.addEventListener('load', function () { navigator.serviceWorker.register('../sw.js').catch(function () {}); }); }</script>
-    <script src="../app.js?v=8" defer></script>
-    <script src="../tool.js?v=8" type="module"></script>
-    <script src="../daily-card.js?v=8" type="module"></script>
+    <script src="../app.js?v=9" defer></script>
+    <script src="../tool.js?v=9" type="module"></script>
+    <script src="../daily-card.js?v=9" type="module"></script>
       <style id="v6-critical">
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;700;800&family=Caveat:wght@500;600&family=Tajawal:wght@400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
@@ -248,7 +248,28 @@ html[lang="en"] .creator-controls { text-align: left; }
 .rk-tile canvas{width:100%;height:auto;display:block}
 .rk-tile-name{position:absolute;inset-inline:0;bottom:0;padding:10px 4px 5px;font-size:11px;font-weight:700;color:#fdf3d7;background:linear-gradient(transparent,rgba(4,18,14,.92) 65%)}
 @media (max-width:420px){.rk-grid{gap:7px}.rk-tile-name{font-size:10px}}
-    </style>
+
+/* v8 polish: comfortable tap targets, fluid countdown, styled photo picker */
+.brand { display: inline-flex; align-items: center; min-height: 40px; padding: 4px 6px; }
+.creator-link { display: inline-flex; align-items: center; min-height: 40px; padding: 4px 10px; }
+.target-pill { min-height: 40px; padding: 6px 14px; }
+.rk-pill { min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; }
+.rk-range { height: 28px; }
+.fb-links a { display: inline-block; min-height: 34px; line-height: 34px; padding: 0 8px; }
+.music-credit a { white-space: nowrap; padding: 10px 4px; margin: -10px -4px; }
+/* fluid countdown: boxes compress instead of clipping under text zoom */
+.hero .timer-grid { display: flex; align-items: stretch; justify-content: center; gap: 2px; }
+.hero .time-unit { min-width: 0; flex: 1 1 0; max-width: 110px; }
+.hero .time-separator { flex: 0 0 auto; }
+.hero .time-value { font-size: clamp(28px, 8vw, 59px); }
+/* styled photo picker (replaces the browser's untranslated file button) */
+.rk-file { position: absolute !important; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+.rk-file-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; margin: 4px 0; padding: 0 18px; border: 1px solid rgba(228, 199, 131, .33); border-radius: 999px; color: #ecd8a4; background: rgba(228, 199, 131, .07); cursor: pointer; font-size: 13px; font-weight: 600; transition: background .2s ease, border-color .2s ease; }
+.rk-file-btn:hover { border-color: rgba(228, 199, 131, .6); background: rgba(228, 199, 131, .13); }
+[hidden] { display: none !important; }
+
+    .made-by { margin: 4px auto 10px; color: #6f8478; font-size: 11px; letter-spacing: .02em; text-align: center; }
+</style>
   </head>
   <body>
     <div class="page-shell">
@@ -442,10 +463,11 @@ html[lang="en"] .creator-controls { text-align: left; }
               </div>
               <div class="rk-field">
                 <label class="rk-label" for="rk-name" id="t-name">Name (optional)</label>
-                <input class="rk-input" id="rk-name" type="text" maxlength="40" placeholder="e.g. Hamada Zakaria" />
+                <input class="rk-input" id="rk-name" type="text" maxlength="40" placeholder="e.g. Ahmed Mohamed" />
               </div>
               <div class="rk-field">
                 <label class="rk-label" for="rk-photo" id="t-photo">Your photo in the greeting (optional)</label>
+                <label class="rk-file-btn" for="rk-photo">📷 Choose a photo</label>
                 <input class="rk-input rk-file" id="rk-photo" type="file" accept="image/*" />
                 <span class="rk-note" id="rk-photo-name"></span>
                 <button class="ambience-button rk-clear-photo" id="rk-photo-clear" type="button" hidden>Remove the photo</button>
@@ -486,15 +508,12 @@ html[lang="en"] .creator-controls { text-align: left; }
               </div>
             </div>
           </div>
-          <p class="creator-credit" id="t-privacy">The video renders entirely on your device; no text, name or photo is uploaded anywhere. Made by Hamada Zakaria.</p>
+          <p class="creator-credit" id="t-privacy">The video renders entirely on your device; no text, name or photo is uploaded anywhere.</p>
         </section>
       </main>
 
       <footer class="footer"><span class="footer-star" aria-hidden="true">✧</span> May Allah let us reach Ramadan <span class="footer-star" aria-hidden="true">✧</span></footer>
-      <div class="signature" aria-label="التوقيع الإلكتروني">
-        <span class="signature-label">Digital signature</span>
-        <span class="signature-name" dir="ltr">Hamada Zakaria</span>
-      </div>
+      <p class="made-by">Made by Hamada Zakaria</p>
       <p class="disclaimer fb-links" style="font-size:12px">Follow us on Facebook: <a href="https://www.facebook.com/share/1cHtmrMAJj/" target="_blank" rel="noopener">Page</a> &middot; <a href="https://www.facebook.com/share/g/1ECezVvJub/" target="_blank" rel="noopener">Group</a></p>
       <p class="disclaimer visits">Page visits: <img src="https://hits.dwyl.com/ramadankarym/ramadan-site.svg?style=flat-square&color=e4c783" alt="عدد زيارات الصفحة" loading="lazy" width="80" height="20" /></p>
       <p class="disclaimer music-credit">Music: "Desert City" by Kevin MacLeod (incompetech.com), licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p>
