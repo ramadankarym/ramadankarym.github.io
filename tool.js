@@ -1,6 +1,6 @@
 // Greeting-video creator: canvas + MediaRecorder, fully client-side.
 // Scene rendering lives in scenes.js and is deterministic in t.
-import { FORMATS, drawScene } from './scenes.js?v=8';
+import { FORMATS, drawScene } from './scenes.js?v=9';
 
 const STR = {
   ar: {
@@ -16,7 +16,7 @@ const STR = {
     line1: 'السطر الأول',
     line2: 'السطر الثاني',
     name: 'الاسم (اختياري)',
-    namePh: 'مثال: حمادة زكريا',
+    namePh: 'مثال: أحمد محمد',
     length: 'مدة الفيديو',
     seconds: 'ثوانٍ',
     make: 'إنشاء الفيديو',
@@ -30,7 +30,7 @@ const STR = {
     shareVideo: 'مشاركة الفيديو',
     shareMsg: 'عملت فيديو تهنئة رمضانية 🌙 اعمل تهنئتك باسمك من هنا:',
     videoShared: 'تمت المشاركة',
-    privacy: 'الفيديو يُصنع بالكامل على جهازك؛ لا يُرفع أي نص أو اسم أو صورة إلى الإنترنت. صُنع بواسطة حمادة زكريا.',
+    privacy: 'الفيديو يُصنع بالكامل على جهازك؛ لا يُرفع أي نص أو اسم أو صورة إلى الإنترنت.',
     unsupported: 'متصفحك لا يدعم إنشاء الفيديو داخل الصفحة. جرّب أحدث نسخة من كروم أو سفاري.',
     line1Default: 'رمضان كريم',
     line2Default: 'كل عام وأنتم بخير',
@@ -50,7 +50,7 @@ const STR = {
     line1: 'First line',
     line2: 'Second line',
     name: 'Name (optional)',
-    namePh: 'e.g. Hamada Zakaria',
+    namePh: 'e.g. Ahmed Mohamed',
     length: 'Video length',
     seconds: 'seconds',
     make: 'Create the video',
@@ -64,7 +64,7 @@ const STR = {
     shareVideo: 'Share the video',
     shareMsg: 'I made a Ramadan greeting video 🌙 Make yours here:',
     videoShared: 'Shared',
-    privacy: 'The video renders entirely on your device; no text, name or photo is uploaded anywhere. Made by Hamada Zakaria.',
+    privacy: 'The video renders entirely on your device; no text, name or photo is uploaded anywhere.',
     unsupported: 'Your browser does not support in-page video creation. Try the latest Chrome or Safari.',
     line1Default: 'Ramadan Kareem',
     line2Default: 'Wishing you a blessed month',
