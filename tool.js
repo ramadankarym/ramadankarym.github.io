@@ -1,6 +1,6 @@
 // Greeting-video creator: canvas + MediaRecorder, fully client-side.
 // Scene rendering lives in scenes.js and is deterministic in t.
-import { FORMATS, drawScene } from './scenes.js?v=7';
+import { FORMATS, drawScene } from './scenes.js?v=8';
 
 const STR = {
   ar: {
