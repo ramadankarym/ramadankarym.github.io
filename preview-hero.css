@@ -1,0 +1,297 @@
+/* Preview revamp: cinematic video hero for the countdown page. */
+.hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    isolation: isolate;
+}
+#hero-scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 90% 60% at 50% 42%, rgba(4, 8, 20, 0) 0%, rgba(4, 8, 20, 0.35) 70%, rgba(4, 8, 20, 0.72) 100%),
+        linear-gradient(180deg, rgba(4, 8, 20, 0.45) 0%, rgba(4, 8, 20, 0) 22%, rgba(4, 8, 20, 0) 70%, rgba(4, 8, 20, 0.6) 100%);
+}
+.hero > *:not(#hero-scene):not(.sky-art) {
+    position: relative;
+    z-index: 2;
+}
+/* the old static mosque silhouette gives way to the living scene;
+   the sky decorations (crescent + lanterns) return in v5 as an overlay */
+.hero .ramadan-scene {
+    display: none;
+}
+/* ---------- v5: prominent gold crescent + fawanis ---------- */
+.hero .sky-art {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    margin: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+.hero .hero-moon {
+    top: 24px;
+    left: 60px;
+    transform: none;
+    width: 120px;
+    color: #ffe1a0;
+    animation: moonPulse 6s ease-in-out infinite;
+}
+@keyframes moonPulse {
+    0%, 100% { transform: translateY(0); filter: drop-shadow(0 0 26px rgba(255, 205, 105, 0.45)); }
+    50% { transform: translateY(-6px); filter: drop-shadow(0 0 46px rgba(255, 214, 130, 0.75)); }
+}
+.hero .lantern {
+    color: #e8c87a;
+    opacity: 0.95;
+    filter: drop-shadow(0 0 16px rgba(255, 200, 100, 0.45));
+}
+.hero .lantern-glass {
+    animation: glassFlicker 3.7s ease-in-out infinite;
+}
+@keyframes glassFlicker {
+    0%, 100% { box-shadow: 0 0 22px rgba(255, 200, 100, 0.5); }
+    45% { box-shadow: 0 0 32px rgba(255, 214, 130, 0.8); }
+    60% { box-shadow: 0 0 17px rgba(255, 200, 100, 0.38); }
+}
+.hero .lantern-left { left: 40px; top: 130px; --lantern-scale: 0.85; }
+.hero .lantern-right { right: 40px; top: 100px; --lantern-scale: 1; }
+.hero .lantern-m1 { left: 130px; top: 56px; --lantern-scale: 0.55; animation-delay: -2.2s; }
+.hero .lantern-m2 { right: 140px; top: 190px; --lantern-scale: 0.5; animation-delay: -4.4s; }
+.hero .lantern-m3 { left: 230px; top: 26px; --lantern-scale: 0.42; animation-delay: -5.6s; }
+@media (max-width: 480px) {
+    .hero .hero-moon { width: 66px; top: 6px; left: 10px; }
+    .hero .lantern-left { left: 8px; top: 70px; --lantern-scale: 0.6; }
+    .hero .lantern-right { right: 8px; top: 56px; --lantern-scale: 0.7; }
+    .hero .lantern-m1 { left: 56px; top: 36px; --lantern-scale: 0.45; }
+    .hero .lantern-m2, .hero .lantern-m3 { display: none; }
+}
+/* glassy countdown panel */
+.hero .countdown-panel {
+    background: rgba(8, 12, 30, 0.42);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 214, 140, 0.32);
+    border-radius: 28px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+.hero .time-value {
+    font-weight: 900;
+    font-size: clamp(2.6rem, 9vw, 4.6rem);
+    background: linear-gradient(180deg, #fff3d0 0%, #ffd98a 45%, #e8a93f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 22px rgba(255, 190, 90, 0.35));
+}
+.hero .time-unit {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 214, 140, 0.18);
+    border-radius: 18px;
+    padding: 0.35em 0.3em 0.5em;
+    min-width: 4.2em;
+}
+.hero .seconds-value.tick {
+    animation: tickPop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+@keyframes tickPop {
+    0% { transform: scale(1.35); filter: brightness(1.6); }
+    100% { transform: scale(1); filter: brightness(1); }
+}
+/* headline glow over the scene */
+.hero .ramadan-word {
+    filter: drop-shadow(0 6px 40px rgba(255, 190, 90, 0.45));
+}
+.hero .eyebrow,
+.hero .headline-support,
+.hero .intro {
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.8);
+}
+.hero .date-card {
+    background: rgba(8, 12, 30, 0.5);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-color: rgba(255, 214, 140, 0.25);
+}
+/* scroll hint */
+.scroll-hint {
+    position: absolute;
+    bottom: max(1.1rem, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    color: rgba(255, 233, 184, 0.85);
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    animation: hintFloat 2.2s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes hintFloat {
+    0%, 100% { transform: translate(-50%, 0); opacity: 0.75; }
+    50% { transform: translate(-50%, 8px); opacity: 1; }
+}
+html.motion-paused .scroll-hint {
+    animation: none;
+}
+
+/* ---------- v2: dazzling modern polish ---------- */
+/* entrance choreography (pure CSS so it can never strand hidden content) */
+.hero .eyebrow { animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both; }
+.hero #page-title { animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.18s both; }
+.hero .headline-support { animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.32s both; }
+.hero .intro { animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.42s both; }
+.hero .countdown-panel { animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.55s both; }
+.hero .date-card { animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.68s both; }
+.hero .share-button { animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.78s both; }
+.hero .ambience-controls { animation: riseIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.86s both; }
+@keyframes riseIn {
+    from { opacity: 0; transform: translateY(26px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* shimmering headline */
+.hero .ramadan-word {
+    background: linear-gradient(110deg, #f2d493 25%, #fffbe8 42%, #ffd98a 50%, #fffbe8 58%, #f2d493 75%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: sheen 5s linear infinite;
+}
+@keyframes sheen {
+    0% { background-position: 125% 0; }
+    100% { background-position: -125% 0; }
+}
+
+/* rotating glow border on the countdown panel */
+@property --bangle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+.hero .countdown-panel { position: relative; }
+.hero .countdown-panel::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 29px;
+    padding: 1.5px;
+    background: conic-gradient(from var(--bangle), transparent 0 68%, rgba(255, 226, 156, 0.95) 82%, rgba(255, 255, 240, 1) 86%, rgba(255, 226, 156, 0.95) 90%, transparent 98%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    animation: borderSpin 6s linear infinite;
+    pointer-events: none;
+}
+@keyframes borderSpin { to { --bangle: 360deg; } }
+
+/* odometer digits */
+.hero .time-value { white-space: nowrap; direction: ltr; unicode-bidi: isolate; }
+.hero .time-value .dv { display: inline-block; }
+.hero .time-value .dv.d-in { animation: digitIn 0.45s cubic-bezier(0.2, 1.2, 0.3, 1); }
+@keyframes digitIn {
+    0% { transform: translateY(-0.55em) scale(1.2); opacity: 0; filter: brightness(2); }
+    100% { transform: none; opacity: 1; filter: none; }
+}
+
+/* journey-to-Ramadan progress */
+.journey {
+    margin-top: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    color: rgba(255, 233, 184, 0.85);
+}
+.journey-track {
+    position: relative;
+    flex: 1;
+    height: 6px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: visible;
+}
+.journey-fill {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    bottom: 0;
+    width: 0%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #b9862f, #ffd98a);
+    box-shadow: 0 0 12px rgba(255, 190, 90, 0.55);
+    transition: width 1s linear;
+}
+.journey-moon {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 0%;
+    transform: translate(-50%, -50%);
+    font-size: 0.95rem;
+    color: #ffe9b8;
+    text-shadow: 0 0 10px rgba(255, 210, 120, 0.9);
+    transition: inset-inline-start 1s linear;
+}
+.journey-pct { font-weight: 700; color: #ffe9b8; min-width: 2.4em; text-align: center; }
+
+/* aurora layer */
+.aurora { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.aurora span {
+    position: absolute;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(90px);
+    mix-blend-mode: screen;
+    opacity: 0.16;
+}
+.aurora span:nth-child(1) { background: radial-gradient(circle, #ffbe5a, transparent 60%); top: -25vmax; inset-inline-start: -15vmax; animation: aur1 26s ease-in-out infinite alternate; }
+.aurora span:nth-child(2) { background: radial-gradient(circle, #ffd98a, transparent 60%); bottom: -30vmax; inset-inline-end: -20vmax; animation: aur2 32s ease-in-out infinite alternate; }
+.aurora span:nth-child(3) { background: radial-gradient(circle, #e8a93f, transparent 60%); top: 30%; inset-inline-start: 35%; opacity: 0.10; animation: aur3 38s ease-in-out infinite alternate; }
+@keyframes aur1 { to { transform: translate(12vmax, 8vmax) scale(1.15); } }
+@keyframes aur2 { to { transform: translate(-10vmax, -6vmax) scale(1.2); } }
+@keyframes aur3 { to { transform: translate(-8vmax, 10vmax) scale(0.85); } }
+html.motion-paused .aurora span { animation: none; }
+
+/* rising gold dust */
+.dust { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.dust span {
+    position: absolute;
+    bottom: -12px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 226, 156, 0.95), rgba(255, 226, 156, 0) 70%);
+    animation: rise 11s linear infinite;
+}
+.dust span:nth-child(1) { inset-inline-start: 8%; animation-delay: 0s; }
+.dust span:nth-child(2) { inset-inline-start: 22%; animation-delay: 2.4s; width: 5px; height: 5px; }
+.dust span:nth-child(3) { inset-inline-start: 36%; animation-delay: 5.1s; width: 9px; height: 9px; }
+.dust span:nth-child(4) { inset-inline-start: 50%; animation-delay: 1.2s; }
+.dust span:nth-child(5) { inset-inline-start: 64%; animation-delay: 6.8s; width: 5px; height: 5px; }
+.dust span:nth-child(6) { inset-inline-start: 76%; animation-delay: 3.6s; width: 8px; height: 8px; }
+.dust span:nth-child(7) { inset-inline-start: 88%; animation-delay: 8.2s; }
+.dust span:nth-child(8) { inset-inline-start: 43%; animation-delay: 9.5s; width: 4px; height: 4px; }
+@keyframes rise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    8% { opacity: 0.9; }
+    85% { opacity: 0.5; }
+    100% { transform: translateY(-105vh) translateX(24px); opacity: 0; }
+}
+html.motion-paused .dust span { animation: none; opacity: 0; }
