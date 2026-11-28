@@ -1,5 +1,5 @@
 // Ramadan page service worker: always-fresh assets with offline fallback.
-const CACHE = 'ramadan-site-v22';
+const CACHE = 'ramadan-site-v23';
 const CORE = [
   './', './index.html', './en/', './styles.css', './app.js', './countdown-core.js', './tool.js', './scenes.js',
   './preview-hero.css', './v10.css', './v10.js', './daily-card.js', './ramadan-logo.svg',
