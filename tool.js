@@ -451,6 +451,17 @@ async function generate() {
   cancelAnimationFrame(previewRaf);
   const makeBtn = $('rk-make');
   makeBtn.disabled = true;
+  const oldHint = document.getElementById('rk-keep-open'); if (oldHint) oldHint.remove();
+  let hint = null;
+  try {
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+      hint = document.createElement('p');
+      hint.id = 'rk-keep-open';
+      hint.textContent = state.lang === 'en' ? 'Keep the screen open until the video finishes' : 'خلي الشاشة مفتوحة لحد ما الفيديو يخلص';
+      hint.style.cssText = 'margin:8px 0 0;text-align:center;font-size:14px;font-weight:600;color:#ffd98a;opacity:.92';
+      makeBtn.insertAdjacentElement('afterend', hint);
+    }
+  } catch { hint = null; }
   const f = fmt();
   canvas.width = f.width;
   canvas.height = f.height;
@@ -481,6 +492,7 @@ async function generate() {
   rec.stop();
   await done;
   try { if (wakeLock) wakeLock.release(); } catch { /* already released */ }
+  if (hint) hint.remove();
   stream.getTracks().forEach((tr) => tr.stop());
   if (sound) sound.stop();
   const blob = new Blob(chunks, { type: picked.mime.split(';')[0] });
@@ -516,7 +528,7 @@ function siteUrl() {
 function setupShare() {
   const box = $('rk-share');
   if (!box) return;
-  const url = siteUrl();
+  const url = siteUrl() + (siteUrl().includes('?') ? '&' : '?') + 's=share';
   const msg = `${s().shareMsg} ${url}`;
   if (state.lang === 'en') { $('rk-share-wa').textContent = 'WhatsApp'; $('rk-share-fb').textContent = 'Facebook'; $('rk-share-tg').textContent = 'Telegram'; }
   $('rk-share-wa').href = `https://wa.me/?text=${encodeURIComponent(msg)}`;
