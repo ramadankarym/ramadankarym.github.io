@@ -9,7 +9,7 @@
 
 ## 📣 فيسبوك
 
-- الصفحة: https://www.facebook.com/share/1cHtmrMAJj/
+- الصفحة: https://www.facebook.com/share/1EBsuiFdBc/
 - المجموعة: https://www.facebook.com/share/g/1ECezVvJub/
 
 ## ✨ المميزات
