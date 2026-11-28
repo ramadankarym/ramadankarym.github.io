@@ -446,6 +446,8 @@ async function generate() {
   hideResult();
   await ensureFont();
   state.recording = true;
+  let wakeLock = null;
+  try { if (navigator.wakeLock) wakeLock = await navigator.wakeLock.request('screen'); } catch { wakeLock = null; }
   cancelAnimationFrame(previewRaf);
   const makeBtn = $('rk-make');
   makeBtn.disabled = true;
@@ -478,6 +480,7 @@ async function generate() {
   });
   rec.stop();
   await done;
+  try { if (wakeLock) wakeLock.release(); } catch { /* already released */ }
   stream.getTracks().forEach((tr) => tr.stop());
   if (sound) sound.stop();
   const blob = new Blob(chunks, { type: picked.mime.split(';')[0] });
