@@ -297,7 +297,6 @@ html.motion-paused .aurora span { animation: none; }
 html.motion-paused .dust span { animation: none; opacity: 0; }
 
 /* ===== v6: survey-driven upgrades ===== */
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
 
 /* warm nights line under the digits */
 .nights-line {
