@@ -739,18 +739,39 @@ html.motion-paused .moon-rays { animation: none; }
     #rk-result .rk-share-buttons > #rk-share-video { grid-column: 1 / -1; min-height: 46px; }
     #rk-result .rk-share-buttons > #rk-share-video[hidden] { display: none; }
   </style>
+<style id="hdr-fix">
+.topbar .brand-text{display:inline-flex;flex-direction:column;gap:1px;line-height:1.25;white-space:nowrap}
+.topbar .brand-text b{font-size:16px;font-weight:800;letter-spacing:0;color:#f6dfa6}
+.topbar .brand-text small{font-size:11px;font-weight:500;letter-spacing:.02em;color:#cdbd92;opacity:.95}
+.topbar .brand span:last-child{font-size:inherit}
+.creator-link,.year-pill{white-space:nowrap}
+.creator-link .emo{margin-inline-start:6px}
+@media (max-width:560px){
+  .topbar{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:8px;row-gap:8px;padding:10px 14px}
+  .topbar-side{display:contents}
+  .topbar .brand{grid-column:1;grid-row:1;gap:9px}
+  .topbar-side .creator-link[lang]{grid-column:2;grid-row:1;justify-self:end}
+  .topbar-side .creator-link:not([lang]){grid-column:1;grid-row:2;justify-self:start}
+  .topbar-side .year-pill{grid-column:2;grid-row:2;justify-self:end}
+  .topbar .brand-text b{font-size:15px}
+  .topbar .brand-text small{font-size:10.5px}
+  .creator-link{min-height:34px;padding:0 13px;font-size:12px}
+  .year-pill{padding:7px 11px;font-size:11px}
+  .topbar.condensed{padding-block:8px}
+}
+</style>
 </head>
   <body>
     <div class="page-shell">
       <header class="topbar" aria-label="رأس الصفحة">
-        <a class="brand" href="#home" aria-label="موعد رمضان — الرئيسية">
+        <a class="brand" href="#home" aria-label="رمضان كريم، موعد رمضان — الرئيسية">
           <span class="brand-mark" aria-hidden="true">
             <img src="./logo-96.webp" width="32" height="32" alt="" decoding="async">
           </span>
-          <span>مَوْعِدُ رَمَضَان</span>
+          <span class="brand-text"><b>رمضان كريم</b><small>مَوْعِدُ رَمَضَان</small></span>
         </a>
         <span class="topbar-side">
-          <a class="creator-link" href="#creator">اصنع تهنئتك 🎬</a>
+          <a class="creator-link" href="#creator">اصنع تهنئتك <span class="emo" aria-hidden="true">🎬</span></a>
           <a class="creator-link" href="./en/" hreflang="en" lang="en">English</a>
           <span class="year-pill"><span class="year-dot" aria-hidden="true"></span> رمضان ١٤٤٨ هـ</span>
         </span>
