@@ -248,6 +248,15 @@ function initSky() {
 
   measureMoon();
   raf = requestAnimationFrame(draw);
+  if ('IntersectionObserver' in window) {
+    // pause the sky when the hero is scrolled out of view
+    new IntersectionObserver((es) => {
+      const vis = es[es.length - 1].isIntersecting;
+      if (reduced.matches) return;
+      if (!vis) { cancelAnimationFrame(raf); raf = 0; }
+      else if (!raf) { last = performance.now(); raf = requestAnimationFrame(draw); }
+    }).observe(hero);
+  }
 
   window.addEventListener('resize', () => { resize(); measureMoon(); }, { passive: true });
   if (reduced.matches) {
