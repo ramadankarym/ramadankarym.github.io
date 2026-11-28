@@ -613,7 +613,7 @@ function go(){if(navigator.doNotTrack==='1')return;var d=document.getElementById
 var s=window.sessionStorage;if(s.getItem('rkv'))return;s.setItem('rkv','1');var r=(document.referrer||'').toLowerCase(),q=new URLSearchParams(location.search),t=(q.get('s')||'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,24),x='direct';
 if(/facebook|fb\.com|l\.messenger/.test(r)||q.has('fbclid'))x='facebook';else if(/whatsapp|wa\.me/.test(r))x='whatsapp';else if(/instagram/.test(r))x='instagram';else if(/tiktok/.test(r))x='tiktok';else if(/google|bing|duckduckgo|yahoo/.test(r))x='search';else if(r&&r.indexOf(H)<0)x='other';
 hit('visits');hit('visits-'+(document.documentElement.lang||'x').slice(0,2));hit('src-'+x);if(t)hit('tag-'+t)}
-addEventListener('load',function(){(window.requestIdleCallback||function(f){setTimeout(f,2000)})(go)})}catch(e){}})();
+addEventListener('load',function(){setTimeout(go,2500)})}catch(e){}})();
 </script>
 </body>
 </html>
