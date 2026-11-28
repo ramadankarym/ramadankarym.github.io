@@ -1,7 +1,7 @@
 // Ramadan page service worker: always-fresh assets with offline fallback.
-const CACHE = 'ramadan-site-v21';
+const CACHE = 'ramadan-site-v22';
 const CORE = [
-  './', './index.html', './styles.css', './app.js', './countdown-core.js', './tool.js', './scenes.js',
+  './', './index.html', './en/', './styles.css', './app.js', './countdown-core.js', './tool.js', './scenes.js',
   './preview-hero.css', './v10.css', './v10.js', './daily-card.js', './ramadan-logo.svg',
   './manifest.webmanifest', './icon-192.png', './icon-512.png',
   './styles.css?v=10', './app.js?v=21', './countdown-core.js?v=21', './tool.js?v=20', './scenes.js?v=19',
@@ -31,6 +31,13 @@ self.addEventListener('fetch', (event) => {
         caches.open(CACHE).then((c) => c.put(event.request, copy));
       }
       return response;
-    }).catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
+    }).catch(() => caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      if (event.request.mode === 'navigate') {
+        const isEn = new URL(event.request.url).pathname.indexOf('/en/') === 0;
+        return caches.match(isEn ? './en/' : './index.html').then((page) => page || caches.match('./index.html'));
+      }
+      return Response.error();
+    }))
   );
 });
