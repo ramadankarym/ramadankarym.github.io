@@ -1016,7 +1016,8 @@ html.motion-paused .moon-rays { animation: none; }
   <script>
 (function(){try{var H=location.hostname;if(H!=='ramadankarym.github.io')return;var B='https://abacus.jasoncameron.dev/hit/rk-dcf271b7a8/';
 function hit(k){try{fetch(B+k,{keepalive:true,credentials:'omit',referrerPolicy:'no-referrer'}).catch(function(){})}catch(e){}}
-function go(){if(navigator.doNotTrack==='1')return;var d=document.getElementById('rk-download');if(d)d.addEventListener('click',function(){hit('downloads')});
+function go(){if(navigator.doNotTrack==='1')return;var rs=document.getElementById('rk-result');if(rs&&window.MutationObserver)new MutationObserver(function(){if(!rs.hidden)hit('made')}).observe(rs,{attributes:true,attributeFilter:['hidden']});
+['video','wa','fb','tg'].forEach(function(n){var e=document.getElementById('rk-share-'+n);if(e)e.addEventListener('click',function(){hit('share-'+n)})});var d=document.getElementById('rk-download');if(d)d.addEventListener('click',function(){hit('downloads')});
 var s=window.sessionStorage;if(s.getItem('rkv'))return;s.setItem('rkv','1');var r=(document.referrer||'').toLowerCase(),q=new URLSearchParams(location.search),t=(q.get('s')||'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,24),x='direct';
 if(/facebook|fb\.com|l\.messenger/.test(r)||q.has('fbclid'))x='facebook';else if(/whatsapp|wa\.me/.test(r))x='whatsapp';else if(/instagram/.test(r))x='instagram';else if(/tiktok/.test(r))x='tiktok';else if(/google|bing|duckduckgo|yahoo/.test(r))x='search';else if(r&&r.indexOf(H)<0)x='other';
 hit('visits');hit('visits-'+(document.documentElement.lang||'x').slice(0,2));hit('src-'+x);if(t)hit('tag-'+t)}
